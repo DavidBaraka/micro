@@ -262,3 +262,22 @@ func InitSimScreen() (tcell.SimulationScreen, error) {
 
 	return s, nil
 }
+
+
+// In screen.go, add this function:
+func HandleEvents() {
+    for {
+        select {
+        case ev := <-Events:
+            // Process floater events first
+            if !screen.ProcessFloaterEvents(ev) {
+                // Process normal editor events
+                handleEvent(ev)
+            }
+        case <-drawChan:
+            // Existing drawing logic...
+            screen.DrawAllFloaters() // Add this line
+            Screen.Show()
+        }
+    }
+}
